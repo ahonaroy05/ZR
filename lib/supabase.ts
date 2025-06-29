@@ -6,10 +6,16 @@ import { Platform } from 'react-native';
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
+// Use valid fallback URLs to prevent URL construction errors
+const defaultUrl = 'https://demo.supabase.co';
+const defaultKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlbW8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MjU0MjM4MCwiZXhwIjoxOTU4MTE4MzgwfQ.BinSx3VLlsYuGK_FagbI_gzTKzIajJm-TKdRq8Y0UI4';
+
 // Validate environment variables
-if (!supabaseUrl || !supabaseAnonKey || 
+const isPlaceholder = !supabaseUrl || !supabaseAnonKey || 
     supabaseUrl === 'https://placeholder.supabase.co' || 
-    supabaseAnonKey === 'placeholder-key') {
+    supabaseAnonKey === 'placeholder-key';
+
+if (isPlaceholder) {
   console.warn('⚠️ Supabase environment variables are not configured properly. Please set up your .env file with valid Supabase credentials.');
 }
 
@@ -59,8 +65,8 @@ const createStorage = () => {
 };
 
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder-key', 
+  (supabaseUrl && !isPlaceholder) ? supabaseUrl : defaultUrl, 
+  (supabaseAnonKey && !isPlaceholder) ? supabaseAnonKey : defaultKey, 
   {
     auth: {
       storage: createStorage(),

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useJournalStreak } from '@/hooks/useJournalStreak';
@@ -19,6 +19,7 @@ export function useJournalEntries() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const mounted = useRef(true);
   const { user } = useAuth();
   const { recordJournalEntry } = useJournalStreak();
   const { recordJournalEntry: recordAchievementProgress } = useAchievements();
@@ -27,7 +28,7 @@ export function useJournalEntries() {
     if (!user) return;
 
     try {
-      setLoading(true);
+      if (mounted.current) setLoading(true);
       const { data, error } = await supabase
         .from('journal_entries')
         .select('*')
@@ -35,11 +36,11 @@ export function useJournalEntries() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setEntries(data || []);
+      if (mounted.current) setEntries(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      if (mounted.current) setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
-      setLoading(false);
+      if (mounted.current) setLoading(false);
     }
   };
 
@@ -66,7 +67,7 @@ export function useJournalEntries() {
 
       if (error) throw error;
 
-      setEntries(prev => [data, ...prev]);
+      if (mounted.current) setEntries(prev => [data, ...prev]);
       
       // Record streak entry
       const streakResult = await recordJournalEntry();
@@ -77,7 +78,7 @@ export function useJournalEntries() {
       return { data, error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to add entry';
-      setError(errorMessage);
+      if (mounted.current) setError(errorMessage);
       return { error: errorMessage };
     }
   };
@@ -96,13 +97,13 @@ export function useJournalEntries() {
 
       if (error) throw error;
 
-      setEntries(prev => prev.map(entry => 
+      if (mounted.current) setEntries(prev => prev.map(entry => 
         entry.id === id ? { ...entry, ...data } : entry
       ));
       return { data, error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update entry';
-      setError(errorMessage);
+      if (mounted.current) setError(errorMessage);
       return { error: errorMessage };
     }
   };
@@ -119,17 +120,21 @@ export function useJournalEntries() {
 
       if (error) throw error;
 
-      setEntries(prev => prev.filter(entry => entry.id !== id));
+      if (mounted.current) setEntries(prev => prev.filter(entry => entry.id !== id));
       return { error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete entry';
-      setError(errorMessage);
+      if (mounted.current) setError(errorMessage);
       return { error: errorMessage };
     }
   };
 
   useEffect(() => {
     fetchEntries();
+    
+    return () => {
+      mounted.current = false;
+    };
   }, [user]);
 
   return {

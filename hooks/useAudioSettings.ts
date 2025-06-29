@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SoundService from '@/lib/soundService';
 
@@ -30,10 +30,15 @@ export function useAudioSettings() {
   const [settings, setSettings] = useState<AudioSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const mounted = useRef(true);
 
   // Load settings from storage on mount
   useEffect(() => {
     loadSettings();
+    
+    return () => {
+      mounted.current = false;
+    };
   }, []);
 
   // Apply volume changes to sound service
@@ -47,27 +52,29 @@ export function useAudioSettings() {
 
   const loadSettings = async () => {
     try {
-      setLoading(true);
+      if (mounted.current) setLoading(true);
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsedSettings = JSON.parse(stored);
-        setSettings({ ...DEFAULT_SETTINGS, ...parsedSettings });
+        if (mounted.current) setSettings({ ...DEFAULT_SETTINGS, ...parsedSettings });
       }
     } catch (err) {
-      setError('Failed to load audio settings');
+      if (mounted.current) setError('Failed to load audio settings');
       console.error('Error loading audio settings:', err);
     } finally {
-      setLoading(false);
+      if (mounted.current) setLoading(false);
     }
   };
 
   const saveSettings = async (newSettings: AudioSettings) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      setSettings(newSettings);
-      setError(null);
+      if (mounted.current) {
+        setSettings(newSettings);
+        setError(null);
+      }
     } catch (err) {
-      setError('Failed to save audio settings');
+      if (mounted.current) setError('Failed to save audio settings');
       console.error('Error saving audio settings:', err);
     }
   };
