@@ -39,6 +39,8 @@ const createStorage = () => {
         } catch {
           return Promise.resolve();
         }
+          return Promise.resolve();
+        }
       },
     };
   }
