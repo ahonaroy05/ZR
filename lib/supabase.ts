@@ -39,9 +39,7 @@ const createStorage = () => {
         } catch {
           return Promise.resolve();
         }
-          return Promise.resolve();
-        }
-      },
+      }
     };
   }
   
@@ -56,7 +54,7 @@ const createStorage = () => {
     removeItem: (key: string) => {
       storage.delete(key);
       return Promise.resolve();
-    },
+    }
   };
 };
 
@@ -69,7 +67,7 @@ export const supabase = createClient(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
-    },
+    }
   }
 );
 
