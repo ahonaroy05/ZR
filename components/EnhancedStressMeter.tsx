@@ -146,8 +146,8 @@ export default function EnhancedStressMeter({
             height: size, 
             borderRadius: size / 2,
             borderWidth: 2,
-            borderColor: '#0ff',
-            shadowColor: '#0ff',
+            borderColor: theme.colors.pastel.lavender,
+            shadowColor: theme.colors.pastel.lavender,
             shadowOffset: { width: 0, height: 0 },
             shadowOpacity: 0.6,
             shadowRadius: 15,
@@ -192,7 +192,7 @@ export default function EnhancedStressMeter({
                 { 
                   color: '#ffffff',
                   fontSize: 48,
-                  textShadowColor: '#0ff',
+                  textShadowColor: theme.colors.pastel.lavender,
                   textShadowOffset: { width: 0, height: 0 },
                   textShadowRadius: 10,
                 }
@@ -201,7 +201,7 @@ export default function EnhancedStressMeter({
               </Text>
             </Text>
             <View style={styles.labelContainer}>
-              <Text style={[styles.label, { color: '#7fffd4' }]}>
+              <Text style={[styles.label, { color: theme.colors.pastel.lilac }]}>
                 {getStressLabel(displayLevel)}
               </Text>
               {getTrendIcon()}
@@ -275,11 +275,11 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 1000,
     borderWidth: 4,
-    borderTopColor: '#0ff',
+    borderTopColor: theme.colors.pastel.lilac,
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     borderLeftColor: 'transparent',
-    shadowColor: '#0ff',
+    shadowColor: theme.colors.pastel.lavender,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 10,
@@ -315,8 +315,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 12,
     backgroundColor: 'rgba(0, 255, 255, 0.2)',
-    borderWidth: 1,
-    borderColor: '#0ff',
+    borderWidth: 0.5,
+    borderColor: theme.colors.pastel.lavender,
   },
   controlText: {
     fontSize: 14,
@@ -331,16 +331,16 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderWidth: 1,
-    borderColor: 'rgba(127, 255, 212, 0.5)',
+    borderWidth: 0.5,
+    borderColor: theme.colors.pastel.lavender,
   },
   syncIndicator: {
     width: 6,
     height: 6,
     borderRadius: 3,
     marginRight: 6,
-    backgroundColor: '#7fffd4',
-    shadowColor: '#7fffd4',
+    backgroundColor: theme.colors.pastel.mint,
+    shadowColor: theme.colors.pastel.mint,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
@@ -348,6 +348,6 @@ const styles = StyleSheet.create({
   syncText: {
     fontSize: 12,
     fontFamily: 'Quicksand-Medium',
-    color: '#7fffd4',
+    color: theme.colors.pastel.mint,
   },
 });
