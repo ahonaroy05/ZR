@@ -2,9 +2,16 @@ import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
-// Use placeholder values for demo purposes
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+// Check if environment variables are properly configured
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+// Validate environment variables
+if (!supabaseUrl || !supabaseAnonKey || 
+    supabaseUrl === 'https://placeholder.supabase.co' || 
+    supabaseAnonKey === 'placeholder-key') {
+  console.warn('⚠️ Supabase environment variables are not configured properly. Please set up your .env file with valid Supabase credentials.');
+}
 
 // Simple storage implementation for different platforms
 const createStorage = () => {
@@ -29,8 +36,6 @@ const createStorage = () => {
         try {
           localStorage.removeItem(key);
           return Promise.resolve();
-        } catch {
-          return Promise.resolve();
         }
       },
     };
@@ -51,14 +56,18 @@ const createStorage = () => {
   };
 };
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: createStorage(),
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
-});
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co', 
+  supabaseAnonKey || 'placeholder-key', 
+  {
+    auth: {
+      storage: createStorage(),
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  }
+);
 
 export type Database = {
   public: {
