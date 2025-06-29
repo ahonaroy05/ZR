@@ -377,10 +377,7 @@ export default function MapScreen() {
                 <MapViewWrapper
                   style={styles.map}
                   stressZones={stressZones}
-                  userLocation={userLocation ? {
-                    latitude: userLocation.latitude,
-                    longitude: userLocation.longitude,
-                  } : currentLocation ? {
+                  userLocation={currentLocation ? {
                     latitude: currentLocation.latitude,
                     longitude: currentLocation.longitude,
                   } : undefined}
