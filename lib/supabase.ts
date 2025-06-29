@@ -36,6 +36,8 @@ const createStorage = () => {
         try {
           localStorage.removeItem(key);
           return Promise.resolve();
+        } catch {
+          return Promise.resolve();
         }
       },
     };
