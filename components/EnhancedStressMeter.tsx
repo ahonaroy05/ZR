@@ -76,10 +76,10 @@ export default function EnhancedStressMeter({
   }, [stressLevel]);
 
   const getStressColor = (level: number) => {
-    if (level < 30) return theme.colors.pastel.mint;
-    if (level < 60) return theme.colors.pastel.peach;
-    if (level < 80) return theme.colors.pastel.rose;
-    return theme.colors.pastel.pink;
+    if (level < 30) return theme.colors.pastel.mint; // Keep mint for low stress
+    if (level < 60) return theme.colors.pastel.lavender; // Change to lavender for medium
+    if (level < 80) return theme.colors.pastel.lilac; // Change to lilac for high
+    return theme.colors.pastel.powder; // Change to powder for very high
   };
 
   const getStressLabel = (level: number) => {
@@ -90,10 +90,10 @@ export default function EnhancedStressMeter({
   };
 
   const getStressGradient = (level: number) => {
-    if (level < 30) return ['#7fffd4', '#00ffff'];
-    if (level < 60) return ['#ff69b4', '#ff1493'];
-    if (level < 80) return ['#ff6b6b', '#ff4757'];
-    return ['#ff3838', '#ff1744'];
+    if (level < 30) return [theme.colors.pastel.mint, theme.colors.pastel.blue]; // Mint to blue for low
+    if (level < 60) return [theme.colors.pastel.lavender, theme.colors.pastel.lilac]; // Lavender to lilac for medium
+    if (level < 80) return [theme.colors.pastel.lilac, theme.colors.pastel.powder]; // Lilac to powder for high
+    return [theme.colors.pastel.powder, theme.colors.pastel.rose]; // Powder to rose for very high
   };
 
   const getTrendIcon = () => {
@@ -145,12 +145,12 @@ export default function EnhancedStressMeter({
             width: size, 
             height: size, 
             borderRadius: size / 2,
-            borderWidth: 2,
+            borderWidth: 1,
             borderColor: theme.colors.pastel.lavender,
             shadowColor: theme.colors.pastel.lavender,
             shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.6,
-            shadowRadius: 15,
+            shadowOpacity: 0.4,
+            shadowRadius: 10,
             transform: [
               { scale: pulseAnim },
               { scale: scaleAnim },
@@ -194,14 +194,14 @@ export default function EnhancedStressMeter({
                   fontSize: 48,
                   textShadowColor: theme.colors.pastel.lavender,
                   textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 10,
+                  textShadowRadius: 8,
                 }
               ]}>
                 {displayLevel}%
               </Text>
             </Text>
             <View style={styles.labelContainer}>
-              <Text style={[styles.label, { color: theme.colors.pastel.lilac }]}>
+              <Text style={[styles.label, { color: theme.colors.pastel.cream }]}>
                 {getStressLabel(displayLevel)}
               </Text>
               {getTrendIcon()}
@@ -253,8 +253,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 10,
     position: 'relative',
-    // Add radial gradient background glow
-    backgroundColor: 'rgba(0, 255, 255, 0.1)',
+    // Subtle background glow
+    backgroundColor: 'rgba(200, 181, 232, 0.05)',
   },
   progressRing: {
     position: 'absolute',
@@ -265,24 +265,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    borderRadius: 1000,
-    borderWidth: 4,
-    borderColor: 'rgba(0, 255, 255, 0.3)',
+    borderRadius: 9999,
+    borderWidth: 3,
+    borderColor: 'rgba(200, 181, 232, 0.2)',
   },
   progressFill: {
     position: 'absolute',
     width: '100%',
     height: '100%',
-    borderRadius: 1000,
-    borderWidth: 4,
-    borderTopColor: theme.colors.pastel.lilac,
+    borderRadius: 9999,
+    borderWidth: 3,
+    borderTopColor: theme.colors.pastel.lavender,
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     borderLeftColor: 'transparent',
     shadowColor: theme.colors.pastel.lavender,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
   },
   content: {
     alignItems: 'center',
@@ -313,15 +313,15 @@ const styles = StyleSheet.create({
   controlButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: 'rgba(0, 255, 255, 0.2)',
+    borderRadius: 10,
+    backgroundColor: 'rgba(200, 181, 232, 0.15)',
     borderWidth: 0.5,
     borderColor: theme.colors.pastel.lavender,
   },
   controlText: {
     fontSize: 14,
     fontFamily: 'Quicksand-SemiBold',
-    color: '#ffffff',
+    color: theme.colors.pastel.cream,
   },
   syncStatus: {
     flexDirection: 'row',
@@ -329,8 +329,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     borderWidth: 0.5,
     borderColor: theme.colors.pastel.lavender,
   },
@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.pastel.mint,
     shadowColor: theme.colors.pastel.mint,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
   },
   syncText: {
     fontSize: 12,
