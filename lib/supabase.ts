@@ -20,7 +20,7 @@ const createStorage = () => {
       getItem: (key: string) => {
         try {
           return Promise.resolve(localStorage.getItem(key));
-        } catch {
+        } catch (e) {
           return Promise.resolve(null);
         }
       },
@@ -28,7 +28,7 @@ const createStorage = () => {
         try {
           localStorage.setItem(key, value);
           return Promise.resolve();
-        } catch {
+        } catch (e) {
           return Promise.resolve();
         }
       },
@@ -36,7 +36,7 @@ const createStorage = () => {
         try {
           localStorage.removeItem(key);
           return Promise.resolve();
-        } catch {
+        } catch (e) {
           return Promise.resolve();
         }
       }
