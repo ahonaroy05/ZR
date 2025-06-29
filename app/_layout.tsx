@@ -41,23 +41,25 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        {!fontsLoaded && !fontError ? (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2A2438' }}>
-            <ActivityIndicator size="large" color="#A89BC7" />
-          </View>
-        ) : (
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="splash" />
-            <Stack.Screen name="onboarding" />
-            <Stack.Screen name="auth/login" />
-            <Stack.Screen name="auth/signup" />
-            <Stack.Screen name="auth/forgot-password" />
-            <Stack.Screen name="auth/reset-password" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        )}
+        <>
+          {!fontsLoaded && !fontError ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2A2438' }}>
+              <ActivityIndicator size="large" color="#A89BC7" />
+            </View>
+          ) : (
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="splash" />
+              <Stack.Screen name="onboarding" />
+              <Stack.Screen name="auth/login" />
+              <Stack.Screen name="auth/signup" />
+              <Stack.Screen name="auth/forgot-password" />
+              <Stack.Screen name="auth/reset-password" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          )}
+        </>
         <StatusBar style="auto" />
       </AuthProvider>
     </ThemeProvider>
