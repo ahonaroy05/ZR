@@ -8,6 +8,20 @@ export default function Index() {
   const { session, loading: authLoading } = useAuth();
   const { theme } = useTheme();
 
+  // Early return if theme is not yet available
+  if (!theme) {
+    return (
+      <View style={{ 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: '#ffffff' // fallback background color
+      }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
   const navigateBasedOnAuth = useCallback(() => {
     if (!authLoading) {
       if (session) {
