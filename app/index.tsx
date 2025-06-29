@@ -1,21 +1,16 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useContext } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
-import { useTheme } from '@/contexts/ThemeContext';
+import { ThemeContext } from '@/contexts/ThemeContext';
 
 export default function Index() {
   const { session, loading: authLoading } = useAuth();
   const mountedRef = useRef(false);
   
-  // Wrap useTheme in try-catch to handle initialization errors
-  let theme;
-  try {
-    theme = useTheme().theme;
-  } catch (error) {
-    // Theme context not yet available, theme will remain undefined
-    theme = undefined;
-  }
+  // Safely get theme from context
+  const themeContext = useContext(ThemeContext);
+  const theme = themeContext?.theme;
 
   // Track component mount status
   useEffect(() => {
