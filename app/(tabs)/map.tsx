@@ -262,76 +262,66 @@ export default function MapScreen() {
   const findMyLocation = () => {
     setIsLocating(true);
     setLocationError(null);
-    
-    if (navigator.geolocation) {
-      // Use watchPosition instead of getCurrentPosition for more stable updates
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          
-          // Update region to center on user's location
-          const newRegion = {
-            latitude,
-            longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01
-          };
-          
-          // Only update region on first position
-          if (isLocating) {
-            setRegion(newRegion);
-            setIsLocating(false);
-          }
-          
-          setCurrentLocation({
-            latitude,
-            longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01
-          });
-          
-          // If route planning is active, set origin to current location
-          if (showRouteInput) {
-            setOrigin(`${latitude},${longitude}`);
-          }
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          let errorMessage = 'Failed to get your location';
-          
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              errorMessage = 'Location permission denied. Please enable location services.';
-              break;
-            case error.POSITION_UNAVAILABLE:
-              errorMessage = 'Location information is unavailable.';
-              break;
-            case error.TIMEOUT:
-              errorMessage = 'Location request timed out.';
-              break;
-          }
-          
-          setLocationError(errorMessage);
-          setIsLocating(false);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 20000,
-          // Increase maximumAge to reduce jitter
-          maximumAge: 120000
-        }
-      );
-      
-      // Clear watch after 5 seconds to prevent continuous updates
-      setTimeout(() => {
-        navigator.geolocation.clearWatch(watchId);
-        setIsLocating(false);
-      }, 5000);
-      
-    } else {
+
+    if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by this browser.');
       setIsLocating(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        // Update region to center on user's location
+        const newRegion = {
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
+        };
+        
+        setRegion(newRegion);
+        
+        setCurrentLocation({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
+        });
+        
+        // If route planning is active, set origin to current location
+        if (showRouteInput) {
+          setOrigin(`${latitude},${longitude}`);
+        }
+        
+        setIsLocating(false);
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        let errorMessage = 'Failed to get your location';
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location permission denied. Please enable location services.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information is unavailable.';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'Location request timed out.';
+            break;
+        }
+        
+        setLocationError(errorMessage);
+        setIsLocating(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 60000
+      }
+    );
   };
 
   const clearRoutes = () => {
