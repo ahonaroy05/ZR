@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Appearance } from 'react-native';
 
+// Define the Theme interface
 export interface Theme {
   isDark: boolean;
   colors: {

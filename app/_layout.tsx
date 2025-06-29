@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { View, ActivityIndicator } from 'react-native';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts } from 'expo-font';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -38,7 +39,11 @@ export default function RootLayout() {
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2A2438' }}>
+        <ActivityIndicator size="large" color="#A89BC7" />
+      </View>
+    );
   }
 
   return (

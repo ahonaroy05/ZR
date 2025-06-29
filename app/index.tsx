@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Index() {
-  const { session, loading } = useAuth();
+  const { session, loading: authLoading } = useAuth();
   const { theme } = useTheme();
 
-  useEffect(() => {
-    if (!loading) {
+  const navigateBasedOnAuth = useCallback(() => {
+    if (!authLoading) {
       if (session) {
         // User is authenticated, go to main app
         router.replace('/(tabs)');
@@ -18,9 +18,13 @@ export default function Index() {
         router.replace('/splash');
       }
     }
-  }, [session, loading]);
+  }, [session, authLoading]);
 
-  if (loading) {
+  useEffect(() => {
+    navigateBasedOnAuth();
+  }, [navigateBasedOnAuth]);
+
+  if (authLoading) {
     return (
       <View style={{ 
         flex: 1, 
