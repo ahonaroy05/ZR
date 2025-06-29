@@ -25,7 +25,8 @@ export default function JournalScreen() {
     streakData, 
     loading: streakLoading, 
     getStreakStatus, 
-    getStreakMilestones 
+    getStreakMilestones,
+    recordJournalEntry
   } = useJournalStreak();
 
   const [isWriting, setIsWriting] = useState(false);
