@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenRoute</title>
+  <style>
+    /* Ensure the map container takes full height */
+    html, body, #root {
+      height: 100%;
+      margin: 0; 
+      padding: 0;
+    }
+    
+    /* Custom styling for Google Maps */
+    .gm-style-cc {
+      display: none; /* Hide Google Maps copyright */
+    }
+    
+    /* Add a CSS fix for marker jitter */
+    .gm-style img {
+      transform: translate3d(0, 0, 0) !important;
+      backface-visibility: hidden !important;
+      perspective: 1000px !important;
+      will-change: transform !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    
+    /* Prevent marker animations */
+    .gm-style-iw {
+      transform: translate3d(0, 0, 0) !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    
+    /* Stabilize map container */
+    .gm-style {
+      transform: translate3d(0, 0, 0) !important;
+      backface-visibility: hidden !important;
+      will-change: transform !important;
+    }
+    
+    /* Disable all Google Maps transitions and animations */
+    .gm-style * {
+      transition: none !important;
+      animation: none !important;
+    }
+    
+    /* Force hardware acceleration */
+    #map {
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
