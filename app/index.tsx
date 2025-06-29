@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
@@ -6,7 +6,24 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Index() {
   const { session, loading: authLoading } = useAuth();
-  const { theme } = useTheme();
+  const mountedRef = useRef(false);
+  
+  // Wrap useTheme in try-catch to handle initialization errors
+  let theme;
+  try {
+    theme = useTheme().theme;
+  } catch (error) {
+    // Theme context not yet available, theme will remain undefined
+    theme = undefined;
+  }
+
+  // Track component mount status
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   // Early return if theme is not yet available
   if (!theme) {
@@ -23,7 +40,7 @@ export default function Index() {
   }
 
   const navigateBasedOnAuth = useCallback(() => {
-    if (!authLoading) {
+    if (!authLoading && mountedRef.current) {
       if (session) {
         // User is authenticated, go to main app
         router.replace('/(tabs)');
