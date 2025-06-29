@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Index() {
   const { session, loading } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!loading) {
@@ -24,9 +26,9 @@ export default function Index() {
         flex: 1, 
         justifyContent: 'center', 
         alignItems: 'center',
-        backgroundColor: '#FDF8FF' 
+        backgroundColor: theme.colors.background 
       }}>
-        <ActivityIndicator size="large" color="#C8B5E8" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
   }

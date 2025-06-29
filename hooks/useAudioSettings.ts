@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SoundService from '@/lib/soundService';
-import { useRef } from 'react';
 
 export interface AudioSettings {
   masterVolume: number;
@@ -31,16 +30,10 @@ export function useAudioSettings() {
   const [settings, setSettings] = useState<AudioSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const mounted = useRef(true);
 
   // Load settings from storage on mount
   useEffect(() => {
-    mounted.current = true;
     loadSettings();
-    
-    return () => {
-      mounted.current = false;
-    };
   }, []);
 
   // Apply volume changes to sound service
@@ -54,35 +47,27 @@ export function useAudioSettings() {
 
   const loadSettings = async () => {
     try {
-      if (mounted.current) setLoading(true);
+      setLoading(true);
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsedSettings = JSON.parse(stored);
-        if (mounted.current) {
-          setSettings({ ...DEFAULT_SETTINGS, ...parsedSettings });
-        }
+        setSettings({ ...DEFAULT_SETTINGS, ...parsedSettings });
       }
     } catch (err) {
-      if (mounted.current) {
-        setError('Failed to load audio settings');
-      }
+      setError('Failed to load audio settings');
       console.error('Error loading audio settings:', err);
     } finally {
-      if (mounted.current) setLoading(false);
+      setLoading(false);
     }
   };
 
   const saveSettings = async (newSettings: AudioSettings) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
-      if (mounted.current) {
-        setSettings(newSettings);
-        setError(null);
-      }
+      setSettings(newSettings);
+      setError(null);
     } catch (err) {
-      if (mounted.current) {
-        setError('Failed to save audio settings');
-      }
+      setError('Failed to save audio settings');
       console.error('Error saving audio settings:', err);
     }
   };

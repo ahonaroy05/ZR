@@ -90,10 +90,10 @@ export default function EnhancedStressMeter({
   };
 
   const getStressGradient = (level: number) => {
-    if (level < 30) return [theme.colors.pastel.mint, '#7fffd4'];
-    if (level < 60) return [theme.colors.pastel.lavender, '#C8B5E8'];
-    if (level < 80) return [theme.colors.pastel.lilac, theme.colors.pastel.lavender];
-    return [theme.colors.pastel.rose, theme.colors.pastel.pink];
+    if (level < 30) return ['#7fffd4', '#00ffff'];
+    if (level < 60) return ['#ff69b4', '#ff1493'];
+    if (level < 80) return ['#ff6b6b', '#ff4757'];
+    return ['#ff3838', '#ff1744'];
   };
 
   const getTrendIcon = () => {
@@ -146,11 +146,11 @@ export default function EnhancedStressMeter({
             height: size, 
             borderRadius: size / 2,
             borderWidth: 2,
-            borderColor: theme.colors.pastel.mint,
-            shadowColor: theme.colors.pastel.mint,
+            borderColor: '#0ff',
+            shadowColor: '#0ff',
             shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.4,
-            shadowRadius: 10,
+            shadowOpacity: 0.6,
+            shadowRadius: 15,
             transform: [
               { scale: pulseAnim },
               { scale: scaleAnim },
@@ -190,18 +190,18 @@ export default function EnhancedStressMeter({
               <Text style={[
                 styles.percentage, 
                 { 
-                  color: '#FFFFFF',
-                  fontSize: 36,
-                  textShadowColor: theme.colors.pastel.mint,
+                  color: '#ffffff',
+                  fontSize: 48,
+                  textShadowColor: '#0ff',
                   textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 6,
+                  textShadowRadius: 10,
                 }
               ]}>
                 {displayLevel}%
               </Text>
             </Text>
             <View style={styles.labelContainer}>
-              <Text style={[styles.label, { color: theme.colors.pastel.mint }]}>
+              <Text style={[styles.label, { color: '#7fffd4' }]}>
                 {getStressLabel(displayLevel)}
               </Text>
               {getTrendIcon()}
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     position: 'relative',
     // Add radial gradient background glow
-    backgroundColor: 'rgba(200, 181, 232, 0.1)',
+    backgroundColor: 'rgba(0, 255, 255, 0.1)',
   },
   progressRing: {
     position: 'absolute',
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 1000,
     borderWidth: 4,
-    borderColor: 'rgba(200, 181, 232, 0.3)',
+    borderColor: 'rgba(0, 255, 255, 0.3)',
   },
   progressFill: {
     position: 'absolute',
@@ -275,14 +275,14 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 1000,
     borderWidth: 4,
-    borderTopColor: theme.colors.pastel.lavender,
+    borderTopColor: '#0ff',
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     borderLeftColor: 'transparent',
-    shadowColor: theme.colors.pastel.lavender,
+    shadowColor: '#0ff',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
   content: {
     alignItems: 'center',
@@ -314,9 +314,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    backgroundColor: 'rgba(200, 181, 232, 0.2)',
+    backgroundColor: 'rgba(0, 255, 255, 0.2)',
     borderWidth: 1,
-    borderColor: theme.colors.pastel.lavender,
+    borderColor: '#0ff',
   },
   controlText: {
     fontSize: 14,
@@ -330,24 +330,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    backgroundColor: 'rgba(200, 181, 232, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderWidth: 1,
-    borderColor: 'rgba(200, 181, 232, 0.3)',
+    borderColor: 'rgba(127, 255, 212, 0.5)',
   },
   syncIndicator: {
     width: 6,
     height: 6,
     borderRadius: 3,
     marginRight: 6,
-    backgroundColor: theme.colors.pastel.mint,
-    shadowColor: theme.colors.pastel.mint,
+    backgroundColor: '#7fffd4',
+    shadowColor: '#7fffd4',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
   },
   syncText: {
     fontSize: 12,
     fontFamily: 'Quicksand-Medium',
-    color: theme.colors.pastel.mint,
+    color: '#7fffd4',
   },
 });

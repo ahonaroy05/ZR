@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Appearance } from 'react-native';
 
-interface Theme {
+export interface Theme {
   isDark: boolean;
   colors: {
     background: string;
@@ -49,9 +49,7 @@ interface Theme {
   };
 }
 
-export type { Theme };
-
-const lightTheme = {
+const lightTheme: Theme = {
   isDark: false,
   colors: {
     background: '#FDF8FF',
@@ -99,7 +97,7 @@ const lightTheme = {
   },
 };
 
-const darkTheme = {
+const darkTheme: Theme = {
   isDark: true,
   colors: {
     background: '#2A2438',
@@ -156,28 +154,25 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
-  const [theme, setTheme] = useState(lightTheme);
 
   useEffect(() => {
     // Initialize theme based on system preference
     const colorScheme = Appearance.getColorScheme();
     setIsDark(colorScheme === 'dark');
-    setTheme(colorScheme === 'dark' ? darkTheme : lightTheme);
 
     // Listen for system theme changes
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setIsDark(colorScheme === 'dark');
-      setTheme(colorScheme === 'dark' ? darkTheme : lightTheme);
     });
 
     return () => subscription?.remove();
   }, []);
 
   const toggleTheme = () => {
-    const newIsDark = !isDark;
-    setIsDark(newIsDark);
-    setTheme(newIsDark ? darkTheme : lightTheme);
+    setIsDark(!isDark);
   };
+
+  const theme = isDark ? darkTheme : lightTheme;
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

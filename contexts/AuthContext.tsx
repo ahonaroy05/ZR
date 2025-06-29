@@ -102,10 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       // Clear any cached data
-      if (mounted.current) {
-        setSession(null);
-        setUser(null);
-      }
+      setSession(null);
+      setUser(null);
       
       const { error } = await supabase.auth.signOut();
       if (error) {

@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZenRoute</title>
+  <!-- Google Maps API Script -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRdBpyOo4ZZqxE8dn_sBprAgfoROaRskM&libraries=places&callback=initMap"></script>
+  <script>
+    // This is a placeholder function that Google Maps will call when loaded
+    // The actual initialization happens in the React component
+    function initMap() {
+      // The map will be initialized by the React component
+      console.log('Google Maps API loaded');
+    }
+  </script>
   <style>
     /* Ensure the map container takes full height */
     html, body, #root {

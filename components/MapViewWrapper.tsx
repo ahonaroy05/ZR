@@ -1,7 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { MapPin, Navigation, Zap, Map } from 'lucide-react-native';
+
+// Google Maps imports for web
+let GoogleMap: any, Marker: any, Circle: any, InfoWindow: any, Polyline: any;
+let google: any;
 
 interface StressZone {
   id: string;
@@ -32,10 +36,6 @@ interface MapViewWrapperProps {
   region?: Region;
   onRegionChange?: (region: Region) => void;
 }
-
-// Declare variables for dynamic imports
-let GoogleMap: any, Marker: any, Circle: any, InfoWindow: any, Polyline: any;
-let google: any;
 
 export default function MapViewWrapper({
   style,
@@ -293,37 +293,32 @@ export default function MapViewWrapper({
   ];
 
   // Load Google Maps API
-  React.useEffect(() => {
+  useEffect(() => {
     if (Platform.OS === 'web') {
-      try {
-        // Check if Google Maps is already loaded
-        if (window.google && window.google.maps) {
-          initializeGoogleMaps();
-          return;
-        }
-
-        // Load Google Maps API
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCRdBpyOo4ZZqxE8dn_sBprAgfoROaRskM&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => initializeGoogleMaps();
-        script.onerror = () => {
-          setError('Failed to load Google Maps API');
-          console.error('Google Maps API failed to load');
-        };
-        document.head.appendChild(script);
-
-        return () => {
-          // Clean up script if component unmounts before loading
-          if (!window.google) {
-            document.head.removeChild(script);
-          }
-        };
-      } catch (error) {
-        console.error('Error loading Google Maps:', error);
-        setError('Failed to initialize map');
+      // Check if Google Maps is already loaded
+      if (window.google && window.google.maps) {
+        initializeGoogleMaps();
+        return;
       }
+
+      // Load Google Maps API
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCRdBpyOo4ZZqxE8dn_sBprAgfoROaRskM&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => initializeGoogleMaps();
+      script.onerror = () => {
+        setError('Failed to load Google Maps API');
+        console.error('Google Maps API failed to load');
+      };
+      document.head.appendChild(script);
+
+      return () => {
+        // Clean up script if component unmounts before loading
+        if (!window.google) {
+          document.head.removeChild(script);
+        }
+      };
     }
   }, []);
 
@@ -344,78 +339,69 @@ export default function MapViewWrapper({
   };
 
   // Initialize map after Google Maps API is loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (Platform.OS === 'web' && mapLoaded && mapRef.current && google) {
-      const initializeMap = () => {
-        try {
-          // Create map instance
-          const mapOptions = {
-            center: { 
-              lat: region?.latitude || userLocation?.latitude || 37.7749, 
-              lng: region?.longitude || userLocation?.longitude || -122.4194 
-            },
-            zoom: 13,
-            styles: customMapStyle,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false,
-            zoomControl: true,
-            zoomControlOptions: {
-              position: google.maps.ControlPosition.RIGHT_TOP
-            }
-          };
-          
-          const map = new GoogleMap(mapRef.current, mapOptions);
-          googleMapRef.current = map;
-
-          // Add event listener for map changes
-          map.addListener('idle', () => {
-            if (onRegionChange) {
-              const center = map.getCenter();
-              const bounds = map.getBounds();
-              if (bounds) {
-                const ne = bounds.getNorthEast();
-                const sw = bounds.getSouthWest();
-                
-                // Calculate deltas based on bounds
-                const latDelta = ne.lat() - sw.lat();
-                const lngDelta = ne.lng() - sw.lng();
-                
-                onRegionChange({
-                  latitude: center.lat(),
-                  longitude: center.lng(),
-                  latitudeDelta: latDelta,
-                  longitudeDelta: lngDelta
-                });
-              }
-            }
-          });
-
-          // Add user location marker if available
-          if (userLocation) {
-            addUserLocationMarker(map, userLocation);
+      try {
+        // Create map instance
+        const mapOptions = {
+          center: { 
+            lat: region?.latitude || userLocation?.latitude || 37.7749, 
+            lng: region?.longitude || userLocation?.longitude || -122.4194 
+          },
+          zoom: 13,
+          styles: customMapStyle,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
           }
+        };
+        
+        const map = new GoogleMap(mapRef.current, mapOptions);
+        googleMapRef.current = map;
 
-          // Add stress zones
-          addStressZones(map, stressZones);
+        // Add event listener for map changes
+        map.addListener('idle', () => {
+          if (onRegionChange) {
+            const center = map.getCenter();
+            const bounds = map.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            
+            // Calculate deltas based on bounds
+            const latDelta = ne.lat() - sw.lat();
+            const lngDelta = ne.lng() - sw.lng();
+            
+            onRegionChange({
+              latitude: center.lat(),
+              longitude: center.lng(),
+              latitudeDelta: latDelta,
+              longitudeDelta: lngDelta
+            });
+          }
+        });
 
-          // Add routes
-          addRoutes(map, routes);
-        } catch (err) {
-          setError('Error creating Google Map');
-          console.error('Error creating Google Map:', err);
+        // Add user location marker if available
+        if (userLocation) {
+          addUserLocationMarker(map, userLocation);
         }
-      };
-      
-      // Small delay to ensure DOM is ready
-      if (mapRef.current) {
-        setTimeout(initializeMap, 100);
+
+        // Add stress zones
+        addStressZones(map, stressZones);
+
+        // Add routes
+        addRoutes(map, routes);
+      } catch (err) {
+        setError('Error creating Google Map');
+        console.error('Error creating Google Map:', err);
       }
     }
   }, [mapLoaded, mapRef.current]);
 
   // Update map when region changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (Platform.OS === 'web' && googleMapRef.current && region) {
       googleMapRef.current.setCenter({ 
         lat: region.latitude, 
@@ -425,14 +411,14 @@ export default function MapViewWrapper({
   }, [region]);
 
   // Update user location marker
-  React.useEffect(() => {
+  useEffect(() => {
     if (Platform.OS === 'web' && googleMapRef.current && userLocation) {
       addUserLocationMarker(googleMapRef.current, userLocation);
     }
   }, [userLocation]);
 
   // Update stress zones
-  React.useEffect(() => {
+  useEffect(() => {
     if (Platform.OS === 'web' && googleMapRef.current) {
       // Clear existing stress zones
       clearStressZones();
@@ -442,7 +428,7 @@ export default function MapViewWrapper({
   }, [stressZones]);
 
   // Update routes
-  React.useEffect(() => {
+  useEffect(() => {
     if (Platform.OS === 'web' && googleMapRef.current) {
       // Clear existing routes
       clearRoutes();
@@ -488,6 +474,9 @@ export default function MapViewWrapper({
         // Make marker flat to prevent 3D tilting
         flat: true
       });
+      
+      // Add accuracy circle around the user location
+      // Removed accuracy circle to reduce visual clutter and potential jitter
       
       // Store references
       userMarkerRef.current = userMarker;
